@@ -1,0 +1,112 @@
+\doxysection{Referencia del espacio de nombres Control\+\_\+\+Analisis\+\_\+\+Data}
+\hypertarget{namespace_control___analisis___data}{}\label{namespace_control___analisis___data}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection*{Funciones}
+\begin{DoxyCompactItemize}
+\item 
+pd.\+Series \mbox{\hyperlink{namespace_control___analisis___data_addbd7690323762b93b4ab90e227cd271}{hampel}} (pd.\+Series series, int window\+\_\+size=7, float n\+\_\+sigmas=3.\+0)
+\item 
+np.\+ndarray \mbox{\hyperlink{namespace_control___analisis___data_a8c18f46383b942edbc842787d7922b10}{step\+\_\+response}} (np.\+ndarray t, float K, float tau, float theta, float y0, float du)
+\item 
+tuple\mbox{[}float, float, float\mbox{]} \mbox{\hyperlink{namespace_control___analisis___data_a8d214b5e9d959312b78e0a9bbcc31995}{ajustar\+\_\+fopdt}} (pd.\+Series t, pd.\+Series y, float y0, float du)
+\item 
+list\mbox{[}tuple\mbox{[}int, int\mbox{]}\mbox{]} \mbox{\hyperlink{namespace_control___analisis___data_a92c36646088f3809fb28e2a6cd039ac4}{detectar\+\_\+escalones}} (pd.\+Data\+Frame df, str pwm\+\_\+col)
+\item 
+None \mbox{\hyperlink{namespace_control___analisis___data_a6f9337547e277ec9ddbef98ccbcb0c3b}{main}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Descripción detallada}
+\begin{DoxyVerb}/**
+* @file    model_fopdt_fit.py
+* @brief   Ajuste de un modelo FOPDT (K, τ, θ) a cada escalón de PWM → RPM
+* @details
+*   * Lee un archivo CSV con columnas de tiempo, PWM y RPM.  
+*   * Detecta los escalones de PWM y divide la señal en tramos “subida/bajada”.  
+*   * Filtra valores atípicos mediante la prueba de Hampel.  
+*   * Ajusta un modelo FOPDT por mínimos cuadrados no‑lineales a cada tramo.  
+*   * Genera y guarda una figura PNG por tramo con la curva medida y la curva
+*     modelo (`pwm_<valorPWM>_<subida|bajada>.png`).  
+* Ejecución:
+* \code{.bash}
+*   python model_fopdt_fit.py datos.csv
+* \endcode
+* Si no se pasa el CSV como argumento, el nombre se pedirá por *stdin*.
+*
+* @warning  Requiere los paquetes *NumPy*, *Pandas*, *SciPy* y *Matplotlib*.
+* @version  1.0
+* @date     2025‑05‑04
+* @author   Miguel Angel Alvarez Guzman
+**/
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Documentación de funciones}
+\Hypertarget{namespace_control___analisis___data_a8d214b5e9d959312b78e0a9bbcc31995}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}!ajustar\_fopdt@{ajustar\_fopdt}}
+\index{ajustar\_fopdt@{ajustar\_fopdt}!Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection{\texorpdfstring{ajustar\_fopdt()}{ajustar\_fopdt()}}
+{\footnotesize\ttfamily \label{namespace_control___analisis___data_a8d214b5e9d959312b78e0a9bbcc31995} 
+ tuple\mbox{[}float, float, float\mbox{]} Control\+\_\+\+Analisis\+\_\+\+Data.\+ajustar\+\_\+fopdt (\begin{DoxyParamCaption}\item[{pd.\+Series}]{t}{, }\item[{pd.\+Series}]{y}{, }\item[{float}]{y0}{, }\item[{float}]{du}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief   Ajusta los parámetros FOPDT (K, τ, θ) por mínimos cuadrados.
+@param   t   Tiempo (s) relativo al inicio del tramo.
+@param   y   Datos de salida (RPM) sin *outliers*.
+@param   y0  Valor inicial de la salida.
+@param   du  Amplitud del escalón PWM.
+@return  Tupla (K, τ, θ) optimizada.
+\end{DoxyVerb}
+ \Hypertarget{namespace_control___analisis___data_a92c36646088f3809fb28e2a6cd039ac4}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}!detectar\_escalones@{detectar\_escalones}}
+\index{detectar\_escalones@{detectar\_escalones}!Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection{\texorpdfstring{detectar\_escalones()}{detectar\_escalones()}}
+{\footnotesize\ttfamily \label{namespace_control___analisis___data_a92c36646088f3809fb28e2a6cd039ac4} 
+ list\mbox{[}tuple\mbox{[}int, int\mbox{]}\mbox{]} Control\+\_\+\+Analisis\+\_\+\+Data.\+detectar\+\_\+escalones (\begin{DoxyParamCaption}\item[{pd.\+Data\+Frame}]{df}{, }\item[{str}]{pwm\+\_\+col}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief   Localiza los índices de inicio/fin de cada tramo posterior
+         a un cambio de PWM.
+@param   df       *DataFrame* con los datos.
+@param   pwm_col  Nombre de la columna PWM.
+@return  Lista de tuplas (idx_start, idx_end) por tramo.
+\end{DoxyVerb}
+ \Hypertarget{namespace_control___analisis___data_addbd7690323762b93b4ab90e227cd271}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}!hampel@{hampel}}
+\index{hampel@{hampel}!Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection{\texorpdfstring{hampel()}{hampel()}}
+{\footnotesize\ttfamily \label{namespace_control___analisis___data_addbd7690323762b93b4ab90e227cd271} 
+ pd.\+Series Control\+\_\+\+Analisis\+\_\+\+Data.\+hampel (\begin{DoxyParamCaption}\item[{pd.\+Series}]{series}{, }\item[{int }]{window\+\_\+size}{ = {\ttfamily 7}, }\item[{float }]{n\+\_\+sigmas}{ = {\ttfamily 3.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief   Detecta *outliers* con la prueba de Hampel.
+@details Calcula la Mediana de la Desviación Absoluta (MAD) en una ventana
+         móvil y marca como atípicos los puntos cuyo desvío supera
+         `n_sigmas·MAD`.
+@param   series       Serie de datos a inspeccionar.
+@param   window_size  Tamaño de la ventana móvil (en muestras).
+@param   n_sigmas     Umbral en desviaciones MAD para etiquetar *outliers*.
+@return  Serie booleana (`True` donde el punto es *outlier*).
+\end{DoxyVerb}
+ \Hypertarget{namespace_control___analisis___data_a6f9337547e277ec9ddbef98ccbcb0c3b}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}!main@{main}}
+\index{main@{main}!Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespace_control___analisis___data_a6f9337547e277ec9ddbef98ccbcb0c3b} 
+ None Control\+\_\+\+Analisis\+\_\+\+Data.\+main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief   Punto de entrada del script.
+@details
+  1. Carga el CSV.  
+  2. Detecta las columnas relevantes (Tiempo, PWM, RPM).  
+  3. Segmenta en escalones.  
+  4. Aplica filtro, ajusta modelo y genera una figura por tramo.
+\end{DoxyVerb}
+ \Hypertarget{namespace_control___analisis___data_a8c18f46383b942edbc842787d7922b10}\index{Control\_Analisis\_Data@{Control\_Analisis\_Data}!step\_response@{step\_response}}
+\index{step\_response@{step\_response}!Control\_Analisis\_Data@{Control\_Analisis\_Data}}
+\doxysubsubsection{\texorpdfstring{step\_response()}{step\_response()}}
+{\footnotesize\ttfamily \label{namespace_control___analisis___data_a8c18f46383b942edbc842787d7922b10} 
+ np.\+ndarray Control\+\_\+\+Analisis\+\_\+\+Data.\+step\+\_\+response (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{t}{, }\item[{float}]{K}{, }\item[{float}]{tau}{, }\item[{float}]{theta}{, }\item[{float}]{y0}{, }\item[{float}]{du}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}@brief   Respuesta de 1er orden con retardo a un escalón.
+@param   t      Vector de tiempo (s).
+@param   K      Ganancia estacionaria del proceso.
+@param   tau    Constante de tiempo (s).
+@param   theta  Retardo puro (s).
+@param   y0     Valor inicial de la salida.
+@param   du     Amplitud del escalón de entrada.
+@return  Vector con la respuesta simulada.
+\end{DoxyVerb}
+ 

@@ -1,0 +1,151 @@
+\doxysection{Referencia del espacio de nombres Rp2040\+\_\+\+Mpy\+\_\+code}
+\hypertarget{namespace_rp2040___mpy__code}{}\label{namespace_rp2040___mpy__code}\index{Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}}
+\doxysubsubsection*{Funciones}
+\begin{DoxyCompactItemize}
+\item 
+None \mbox{\hyperlink{namespace_rp2040___mpy__code_a4c7821aff92658a81ecb4cdd7a5caafe}{medir\+\_\+pulso}} (Pin pin)
+\item 
+None \mbox{\hyperlink{namespace_rp2040___mpy__code_ac0a9d8d2bc8620cd9b957b346e68edd0}{ejecutar\+\_\+captura}} (int paso\+\_\+pwm)
+\item 
+None \mbox{\hyperlink{namespace_rp2040___mpy__code_a92ebbfc6d1cbea46267b19be838a2438}{modo\+\_\+manual}} (int pwm\+\_\+val)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_ad48434a9a75e3283602f56ce7d34d249}\label{namespace_rp2040___mpy__code_ad48434a9a75e3283602f56ce7d34d249} 
+int {\bfseries ENCODER\+\_\+\+HUECOS} = 20 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Número de ranuras opacas \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a859c9591890c8c81199bc891cc44d31f}\label{namespace_rp2040___mpy__code_a859c9591890c8c81199bc891cc44d31f} 
+int {\bfseries SECTORS\+\_\+\+REV} = ENCODER\+\_\+\+HUECOS \texorpdfstring{$\ast$}{*} 2 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Ranuras + espacios \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_af0765a20f653731d13c790012335be3e}\label{namespace_rp2040___mpy__code_af0765a20f653731d13c790012335be3e} 
+int {\bfseries RPM\+\_\+\+CONST\+\_\+\+US} = 60\+\_\+000\+\_\+000 // SECTORS\+\_\+\+REV /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Factor µs → \+RPM \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a374d5af76d6503ed2603832a2c7c9dc2}\label{namespace_rp2040___mpy__code_a374d5af76d6503ed2603832a2c7c9dc2} 
+int {\bfseries MIN\+\_\+\+DT\+\_\+\+US} = 100 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Antirrebote / ruido \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_af1a85de10c01518cd358b6c74ee4fe07}\label{namespace_rp2040___mpy__code_af1a85de10c01518cd358b6c74ee4fe07} 
+int {\bfseries PWM\+\_\+\+FREQ\+\_\+\+HZ} = 100\+\_\+000 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Frecuencia PWM (Hz) \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a8f1ac947733402c31442fb71201c39f5}\label{namespace_rp2040___mpy__code_a8f1ac947733402c31442fb71201c39f5} 
+int {\bfseries TIEMPO\+\_\+\+ENTRE\+\_\+\+ESCALONES} = 2\+\_\+000 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Dur. cada escalón (ms) \texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_ac6959bb642a06a7b56c6fd83effa923f}\label{namespace_rp2040___mpy__code_ac6959bb642a06a7b56c6fd83effa923f} 
+int {\bfseries REPORT\+\_\+\+INTERVALO\+\_\+\+MS} = 500 /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}$<$ Periodo log manual (ms)\texorpdfstring{$\ast$}{*}/
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a8eaf5610adb206b89c412b23ee2fbbd1}\label{namespace_rp2040___mpy__code_a8eaf5610adb206b89c412b23ee2fbbd1} 
+{\bfseries pwm\+\_\+pin} = PWM(Pin(3))
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_ace76ff518196599f6cd587eb004d0ebe}\label{namespace_rp2040___mpy__code_ace76ff518196599f6cd587eb004d0ebe} 
+{\bfseries sensor\+\_\+pin} = Pin(5, Pin.\+IN, Pin.\+PULL\+\_\+\+UP)
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a66f2e29ec69332dad9c51fd0a28acf2a}\label{namespace_rp2040___mpy__code_a66f2e29ec69332dad9c51fd0a28acf2a} 
+int {\bfseries high\+\_\+start\+\_\+us} = None
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_aed8f048c2acdb6bf516684bcd9920f9e}\label{namespace_rp2040___mpy__code_aed8f048c2acdb6bf516684bcd9920f9e} 
+float {\bfseries rpm\+\_\+global} = 0.\+0
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_acc9b6dbfe797aa2a11e9a07242dc26bb}\label{namespace_rp2040___mpy__code_acc9b6dbfe797aa2a11e9a07242dc26bb} 
+bool {\bfseries modo\+\_\+captura} = False
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_aa4bfea90952cec63c3f16007609a223e}\label{namespace_rp2040___mpy__code_aa4bfea90952cec63c3f16007609a223e} 
+int {\bfseries pwm\+\_\+manual} = 0
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a325d38ee8149e1f85744867a528e4ce2}\label{namespace_rp2040___mpy__code_a325d38ee8149e1f85744867a528e4ce2} 
+{\bfseries trigger}
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a58923a352202d712f14988a54429ba79}\label{namespace_rp2040___mpy__code_a58923a352202d712f14988a54429ba79} 
+{\bfseries handler}
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_ad5c0333388840b9483a3e6f66e92bd7a}\label{namespace_rp2040___mpy__code_ad5c0333388840b9483a3e6f66e92bd7a} 
+{\bfseries cmd} = input("{}$>$$>$ "{}).strip()
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a06e65432428ff8fc24edbc321f06f6ee}\label{namespace_rp2040___mpy__code_a06e65432428ff8fc24edbc321f06f6ee} 
+{\bfseries partes} = cmd.\+split()
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a4ce0180dca6d11b4e5ea66cd38d640f1}\label{namespace_rp2040___mpy__code_a4ce0180dca6d11b4e5ea66cd38d640f1} 
+{\bfseries paso} = int(partes\mbox{[}1\mbox{]})
+\item 
+\Hypertarget{namespace_rp2040___mpy__code_a33f378cbc86f515191a1d76054719a45}\label{namespace_rp2040___mpy__code_a33f378cbc86f515191a1d76054719a45} 
+{\bfseries val} = int(partes\mbox{[}1\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Descripción detallada}
+\begin{DoxyVerb}/**
+ * @file    encoder_rpm_logger.py
+ * @brief   Medición de RPM con RP2040 usando un disco encoder y generación de
+ *          señal PWM para caracterización de motor.
+ *
+ * El script:
+ *   - Configura un pin PWM para excitar el motor a 100 kHz.
+ *   - Usa interrupciones para medir el tiempo en alto de cada sector del
+ *     disco encoder y convertirlo en RPM.
+ *   - Permite dos modos:
+ *       1.  **Captura automática**: barrido de PWM con registro CSV.
+ *       2.  **Manual**: aplica un ciclo PWM fijo y muestra la RPM en consola.
+ *
+ * Comandos de consola:
+ *   - `START <paso>`  Inicia la captura automática con incrementos de <paso> %.
+ *   - `PWM <valor>`   Activa el modo manual con un PWM constante (0–100 %).
+ *   - `EXIT`          Detiene el PWM y sale.
+ *
+ * @author  Miguel Angel Alvarez Guzman
+ * @date    2025‑05‑04
+ */
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Documentación de funciones}
+\Hypertarget{namespace_rp2040___mpy__code_ac0a9d8d2bc8620cd9b957b346e68edd0}\index{Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}!ejecutar\_captura@{ejecutar\_captura}}
+\index{ejecutar\_captura@{ejecutar\_captura}!Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}}
+\doxysubsubsection{\texorpdfstring{ejecutar\_captura()}{ejecutar\_captura()}}
+{\footnotesize\ttfamily \label{namespace_rp2040___mpy__code_ac0a9d8d2bc8620cd9b957b346e68edd0} 
+ None Rp2040\+\_\+\+Mpy\+\_\+code.\+ejecutar\+\_\+captura (\begin{DoxyParamCaption}\item[{int}]{paso\+\_\+pwm}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}/**
+ * @brief  Barrido automático de PWM y registro de datos en CSV.
+ *
+ * Genera una rampa ascendente y otra descendente de @c 0 % → @c 100 %
+ * (paso @p paso_pwm) aplicando cada valor durante
+ * `TIEMPO_ENTRE_ESCALONES` ms.  Se crea un archivo CSV con columnas:
+ * `Tiempo_ms, PWM_porcentaje, RPM`.
+ *
+ * @param paso_pwm  Incremento/decremento porcentual (1–99).
+ */
+\end{DoxyVerb}
+ \Hypertarget{namespace_rp2040___mpy__code_a4c7821aff92658a81ecb4cdd7a5caafe}\index{Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}!medir\_pulso@{medir\_pulso}}
+\index{medir\_pulso@{medir\_pulso}!Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}}
+\doxysubsubsection{\texorpdfstring{medir\_pulso()}{medir\_pulso()}}
+{\footnotesize\ttfamily \label{namespace_rp2040___mpy__code_a4c7821aff92658a81ecb4cdd7a5caafe} 
+ None Rp2040\+\_\+\+Mpy\+\_\+code.\+medir\+\_\+pulso (\begin{DoxyParamCaption}\item[{Pin}]{pin}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}/**
+ * @brief  Interrupción en flancos del sensor.
+ *
+ *  * **Flanco de subida (LOW→HIGH)**: almacena el instante en que empieza
+ *    el sector opaco (pulso alto).
+ *  * **Flanco de bajada (HIGH→LOW)**: computa la duración del pulso alto
+ *    (∆t) y, si supera el antirrebote, actualiza la variable global
+ *    `rpm_global` con el valor de RPM correspondiente.
+ *
+ * @param pin  Objeto `machine.Pin` que generó la interrupción.
+ * @note       Se asume que el disco tiene @c SECTORS_REV sectores por
+ *             revolución, de modo que un pulso corresponde a 1 /
+ *             `SECTORS_REV` de vuelta.
+ */
+\end{DoxyVerb}
+ \Hypertarget{namespace_rp2040___mpy__code_a92ebbfc6d1cbea46267b19be838a2438}\index{Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}!modo\_manual@{modo\_manual}}
+\index{modo\_manual@{modo\_manual}!Rp2040\_Mpy\_code@{Rp2040\_Mpy\_code}}
+\doxysubsubsection{\texorpdfstring{modo\_manual()}{modo\_manual()}}
+{\footnotesize\ttfamily \label{namespace_rp2040___mpy__code_a92ebbfc6d1cbea46267b19be838a2438} 
+ None Rp2040\+\_\+\+Mpy\+\_\+code.\+modo\+\_\+manual (\begin{DoxyParamCaption}\item[{int}]{pwm\+\_\+val}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}/**
+ * @brief  Modo manual: aplica un PWM fijo y muestra la RPM periódicamente.
+ *
+ * @param pwm_val  Ciclo de trabajo en porcentaje (0–100 %).
+ * @note  Presione **Ctrl‑C** para salir y desactivar el PWM.
+ */
+\end{DoxyVerb}
+ 
