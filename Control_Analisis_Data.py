@@ -1,25 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 /**
-* @file    model_fopdt_fit.py
-* @brief   Ajuste de un modelo FOPDT (K, τ, θ) a cada escalón de PWM → RPM
-* @details
-*   * Lee un archivo CSV con columnas de tiempo, PWM y RPM.  
-*   * Detecta los escalones de PWM y divide la señal en tramos “subida/bajada”.  
-*   * Filtra valores atípicos mediante la prueba de Hampel.  
-*   * Ajusta un modelo FOPDT por mínimos cuadrados no‑lineales a cada tramo.  
-*   * Genera y guarda una figura PNG por tramo con la curva medida y la curva
-*     modelo (`pwm_<valorPWM>_<subida|bajada>.png`).  
-* Ejecución:
-* \code{.bash}
-*   python model_fopdt_fit.py datos.csv
-* \endcode
-* Si no se pasa el CSV como argumento, el nombre se pedirá por *stdin*.
-*
-* @warning  Requiere los paquetes *NumPy*, *Pandas*, *SciPy* y *Matplotlib*.
-* @version  1.0
-* @date     2025‑05‑04
-* @author   Miguel Angel Alvarez Guzman
+ * @file    model_fopdt_fit.py
+ * @brief   Ajuste FOPDT por escalones y gráfico global del sistema
+ * @version 1.2  (2025‑05‑06)
 **/
 """
 import sys, os
@@ -29,199 +13,140 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 # ----------------------------------------------------------------------
-# ----------------------  UTILIDADES DE FILTRO  ------------------------
-def hampel(series: pd.Series,
-           window_size: int = 7,
-           n_sigmas: float = 3.0) -> pd.Series:
-    """
-    @brief   Detecta *outliers* con la prueba de Hampel.
-    @details Calcula la Mediana de la Desviación Absoluta (MAD) en una ventana
-             móvil y marca como atípicos los puntos cuyo desvío supera
-             `n_sigmas·MAD`.
-    @param   series       Serie de datos a inspeccionar.
-    @param   window_size  Tamaño de la ventana móvil (en muestras).
-    @param   n_sigmas     Umbral en desviaciones MAD para etiquetar *outliers*.
-    @return  Serie booleana (`True` donde el punto es *outlier*).
-    """
-    k = 1.4826                         # ≈ convertir MAD a σ (distrib. normal)
+def hampel(series, window_size=7, n_sigmas=3.0):
+    k = 1.4826
     med_rolling = series.rolling(window_size, center=True).median()
     diff = np.abs(series - med_rolling)
     mad = k * diff.rolling(window_size, center=True).median()
-    outliers = diff > n_sigmas * mad
-    return outliers.fillna(False)
+    return (diff > n_sigmas * mad).fillna(False)
 
-
-# ----------------------------------------------------------------------
-# ---------------------  MODELO Y AJUSTE  ------------------------------
-def step_response(t: np.ndarray,
-                  K: float,
-                  tau: float,
-                  theta: float,
-                  y0: float,
-                  du: float) -> np.ndarray:
-    """
-    @brief   Respuesta de 1er orden con retardo a un escalón.
-    @param   t      Vector de tiempo (s).
-    @param   K      Ganancia estacionaria del proceso.
-    @param   tau    Constante de tiempo (s).
-    @param   theta  Retardo puro (s).
-    @param   y0     Valor inicial de la salida.
-    @param   du     Amplitud del escalón de entrada.
-    @return  Vector con la respuesta simulada.
-    """
+# ---------- Modelo ----------------------------------------------------
+def step_response(t, K, tau, theta, y0, du):
     t = np.asarray(t)
-    y = np.where(
-        t < theta,
-        y0,
-        y0 + K * du * (1 - np.exp(-(t - theta) / tau))
-    )
-    return y
+    return np.where(t < theta,
+                    y0,
+                    y0 + K * du * (1 - np.exp(-(t - theta) / tau)))
 
+def ajustar_fopdt(t, y, y0, du):
+    K0 = (y.iloc[-1] - y0) / du if du else 1.0
+    tau0 = max((t.iloc[-1] - t.iloc[0]) / 3.0, 0.05)
+    popt, _ = curve_fit(lambda t_, K, tau, theta: step_response(t_, K, tau, theta, y0, du),
+                        t, y, p0=[K0, tau0, 0],
+                        bounds=([-np.inf, 1e-3, 0], [np.inf, np.inf, t.iloc[-1]]),
+                        method='trf', loss='soft_l1')
+    return popt  # (K, tau, theta)
 
-def ajustar_fopdt(t: pd.Series,
-                  y: pd.Series,
-                  y0: float,
-                  du: float) -> tuple[float, float, float]:
-    """
-    @brief   Ajusta los parámetros FOPDT (K, τ, θ) por mínimos cuadrados.
-    @param   t   Tiempo (s) relativo al inicio del tramo.
-    @param   y   Datos de salida (RPM) sin *outliers*.
-    @param   y0  Valor inicial de la salida.
-    @param   du  Amplitud del escalón PWM.
-    @return  Tupla (K, τ, θ) optimizada.
-    """
-    # --- Estimaciones iniciales ----------------------------
-    K0     = (y.iloc[-1] - y0) / du if du != 0 else 1.0
-    tau0   = max((t.iloc[-1] - t.iloc[0]) / 3.0, 0.05)
-    theta0 = 0.0
-
-    def modelo(t_, K, tau, theta):        # Función interna para curve_fit
-        return step_response(t_, K, tau, theta, y0, du)
-
-    popt, _ = curve_fit(
-        modelo, t, y,
-        p0=[K0, tau0, theta0],
-        bounds=([-np.inf, 1e-3, 0], [np.inf, np.inf, t.iloc[-1]]),
-        method='trf',          # algoritmo robusto
-        loss='soft_l1',        # penaliza menos los outliers residuales
-        f_scale=1.0
-    )
-    return popt
-
-
-# ----------------------------------------------------------------------
-def detectar_escalones(df: pd.DataFrame, pwm_col: str) -> list[tuple[int, int]]:
-    """
-    @brief   Localiza los índices de inicio/fin de cada tramo posterior
-             a un cambio de PWM.
-    @param   df       *DataFrame* con los datos.
-    @param   pwm_col  Nombre de la columna PWM.
-    @return  Lista de tuplas (idx_start, idx_end) por tramo.
-    """
+# ---------- Escalones -------------------------------------------------
+def detectar_escalones(df, pwm_col):
     cambio = df[pwm_col].diff().fillna(0) != 0
-    pasos  = np.where(cambio)[0]
-    pasos  = np.append(pasos, len(df))     # Añade fin del archivo
-    tramos = [(pasos[i], pasos[i+1]) for i in range(len(pasos)-1)]
-    return tramos
+    pasos = np.where(cambio)[0]
+    pasos = np.append(pasos, len(df))
+    return [(pasos[i], pasos[i+1]) for i in range(len(pasos)-1)]
 
-
-# ----------------------------------------------------------------------
-def main() -> None:
-    """
-    @brief   Punto de entrada del script.
-    @details
-      1. Carga el CSV.  
-      2. Detecta las columnas relevantes (Tiempo, PWM, RPM).  
-      3. Segmenta en escalones.  
-      4. Aplica filtro, ajusta modelo y genera una figura por tramo.
-    """
-    # -------- 1. Cargar CSV -------------------------------------------
-    if len(sys.argv) > 1:
-        csv_file = sys.argv[1]
-    else:
-        csv_file = input("Nombre del CSV: ")
+# ======================================================================
+def main():
+    csv_file = sys.argv[1] if len(sys.argv) > 1 else input("Nombre del CSV: ")
     df = pd.read_csv(csv_file)
 
-    # -------- 2. Detectar columnas ------------------------------------
-    time_col = (
-        'Tiempo_ms'     if 'Tiempo_ms'     in df.columns else
-        'timestamp_us'  if 'timestamp_us'  in df.columns else
-        df.columns[0]
-    )
-    if time_col == 'timestamp_us':         # Normaliza a milisegundos
+    # -- columnas -----------------------------------------------------------------
+    time_col = ('Tiempo_ms' if 'Tiempo_ms' in df.columns else
+                'timestamp_us' if 'timestamp_us' in df.columns else df.columns[0])
+    if time_col == 'timestamp_us':
         df['Tiempo_ms'] = df['timestamp_us'] / 1000.0
         time_col = 'Tiempo_ms'
 
-    pwm_col = (
-        'PWM_porcentaje' if 'PWM_porcentaje' in df.columns else df.columns[1]
-    )
+    pwm_col = 'PWM_porcentaje' if 'PWM_porcentaje' in df.columns else df.columns[1]
     rpm_col = 'RPM' if 'RPM' in df.columns else df.columns[2]
 
-    # -------- 3. Detectar escalones -----------------------------------
-    tramos = detectar_escalones(df, pwm_col)
+    # normaliza tiempo absoluto a segundos desde inicio
+    df['t_s'] = (df[time_col] - df[time_col].iloc[0]) / 1000.0
 
-    # -------- 4. Procesar cada tramo ----------------------------------
+    tramos = detectar_escalones(df, pwm_col)
+    resultados = []          # para construir la curva global
+
+    # ------------------------------------------------------------------por tramo
     for idx_start, idx_end in tramos:
         seg = df.iloc[idx_start:idx_end].copy()
-        if len(seg) < 8:                   # Evita tramos muy cortos
+        if len(seg) < 8:  # tramo muy corto
             continue
 
         pwm_new  = seg[pwm_col].iloc[0]
         pwm_prev = df[pwm_col].iloc[idx_start-1] if idx_start > 0 else pwm_new
         du = pwm_new - pwm_prev
         if du == 0:
-            continue                       # No hay escalón real
-
-        direction = 'subida' if du > 0 else 'bajada'
-
-        # --- 4.1 Eje de tiempo relativo (s) ---------------------------
-        t_ms = seg[time_col] - seg[time_col].iloc[0]
-        t_s  = t_ms / 1000.0
-        y    = seg[rpm_col]
-        y0   = y.iloc[0]
-
-        # --- 4.2 Filtro de *outliers* ---------------------------------
-        outliers  = hampel(y, window_size=7, n_sigmas=3.0)
-        mask      = ~outliers
-        t_clean   = t_s[mask]
-        y_clean   = y[mask]
-
-        if len(y_clean) < 5:
-            print(f"[WARN] Tramo PWM {pwm_prev}→{pwm_new}% "
-                  f"({direction}) sin suficientes datos tras filtrar.")
             continue
 
-        # --- 4.3 Ajuste FOPDT -----------------------------------------
+        direccion = 'subida' if du > 0 else 'bajada'
+        t_rel = seg['t_s'] - seg['t_s'].iloc[0]
+        y     = seg[rpm_col]
+        y0    = y.iloc[0]
+
+        # ---- filtro Hampel -------------------------------------------------------
+        mask = ~hampel(y, 7, 3.0)
+        t_clean, y_clean = t_rel[mask], y[mask]
+        if len(y_clean) < 5:
+            print(f"[WARN] Tramo PWM {pwm_prev}->{pwm_new}% sin datos suficientes.")
+            continue
+
         try:
             K, tau, theta = ajustar_fopdt(t_clean, y_clean, y0, du)
         except RuntimeError:
-            print(f"[ERR] No converge en PWM {pwm_new}% ({direction}). "
-                  f"Se omite.")
+            print(f"[ERR] No converge PWM {pwm_new}% ({direccion}). Omitido.")
             continue
 
-        y_model = step_response(t_s, K, tau, theta, y0, du)
+        t_seg = t_rel
+        y_mod = step_response(t_seg, K, tau, theta, y0, du)
 
-        # --- 4.4 Gráfica ----------------------------------------------
-        plt.figure(figsize=(8, 4))
-        plt.plot(t_clean, y_clean, '.', label='Medido ')
-        plt.plot(t_s, y_model, '-', label=f'Modelo 1º orden\n'
-                 f'K={K:.2f}, τ={tau:.2f}s, θ={theta:.2f}s')
-
-        plt.title(f'Respuesta motor: PWM {pwm_prev:.0f}→{pwm_new:.0f}% '
-                  f'({direction})')
-        plt.xlabel('Tiempo [s]')
-        plt.ylabel('RPM')
-        plt.grid(True)
-        plt.legend()
-
-        # --- 4.5 Guardar PNG ------------------------------------------
-        fname = f"Salida Mpy/pwm_{int(pwm_new)}_{direction}_mpy.png"
-        plt.tight_layout()
-        plt.savefig(fname, dpi=150)
-        plt.close()
+        # ---- gráfico individual --------------------------------------------------
+        rmse = np.sqrt(np.mean((y_clean - step_response(t_clean, K, tau, theta, y0, du))**2))
+        plt.figure(figsize=(8,4))
+        plt.plot(t_clean, y_clean, '.', label='Medido')
+        plt.plot(t_seg, y_mod, '-', label=f'Modelo; K={K:.2f}, τ={tau:.2f}s, θ={theta:.2f}s')
+        plt.text(0.02, 0.95, f'RMSE={rmse:.1f} RPM', transform=plt.gca().transAxes,
+                 ha='left', va='top', bbox=dict(fc='white', alpha=0.75, ec='none'))
+        plt.title(f'PWM {pwm_prev:.0f}→{pwm_new:.0f}% ({direccion})')
+        plt.xlabel('Tiempo [s]'); plt.ylabel('RPM')
+        plt.grid(); plt.legend(); plt.tight_layout()
+        fname = f"Salida Mpy/pwm_{int(pwm_new)}_{direccion}_mpy.png"
+        plt.savefig(fname, dpi=150); plt.close()
         print(f"[OK] Guardado: {fname}")
 
+        # ---- guardar parámetros para curva global -------------------------------
+        resultados.append({
+            'slice': slice(idx_start, idx_end),
+            'K': K, 'tau': tau, 'theta': theta,
+            'y0': y0, 'du': du,
+            't0': df['t_s'].iloc[idx_start]
+        })
+
+    # ================================================================= global ===
+    if resultados:
+        y_model_global = np.full(len(df), np.nan)
+        for r in resultados:
+            idx = r['slice']
+            t_seg_abs = df['t_s'].iloc[idx] - r['t0']     # tiempo relativo tramo
+            y_model_global[idx] = step_response(t_seg_abs,
+                                                r['K'], r['tau'], r['theta'],
+                                                r['y0'], r['du'])
+
+        # puede haber pequeñas zonas NaN (tramos demasiado cortos / descartados)
+        # --> sustituirlas por interpolación lineal para la gráfica
+        y_model_interp = pd.Series(y_model_global).interpolate(method='linear')
+
+        # ---- gráfico global ------------------------------------------------------
+        plt.figure(figsize=(10,5))
+        plt.plot(df['t_s'], df[rpm_col], '.', markersize=2, label='Medido')
+        plt.plot(df['t_s'], y_model_interp, '-', linewidth=1.2, label='Modelo global')
+        plt.title('Respuesta completa del sistema (medición vs modelo FOPDT)')
+        plt.xlabel('Tiempo [s]'); plt.ylabel('RPM'); plt.grid(); plt.legend()
+        plt.ylim(0, 8000)  # Limitar el eje y a un máximo de 8000
+        plt.tight_layout()
+        global_name = "Salida Mpy/pwm_global_mpy.png"
+        plt.savefig(global_name, dpi=150); plt.close()
+        print(f"[OK] Gráfico global guardado: {global_name}")
+    else:
+        print("[INFO] No se generó gráfico global (sin tramos válidos).")
 
 # ----------------------------------------------------------------------
-if __name__ == "__main__":    # ¡Ejecútame!
+if __name__ == "__main__":
     main()

@@ -137,7 +137,7 @@ def ejecutar_captura(paso_pwm: int) -> None:
 
             t0 = time.ticks_ms()
             while time.ticks_diff(time.ticks_ms(), t0) < TIEMPO_ENTRE_ESCALONES:
-                time.sleep_ms(10)  # latencia mínima sin bloquear IRQ
+                time.sleep_ms(4)
                 marca = time.ticks_diff(time.ticks_ms(), inicio)
                 try:
                     f.write(f"{marca},{pwm_val},{rpm_global:.4f}\n")
