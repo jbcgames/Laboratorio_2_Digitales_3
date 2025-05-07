@@ -112,47 +112,49 @@ $(function(){initNavTree('namespace_control___analisis___data.html',''); initRes
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Funciones</h2></td></tr>
 <tr class="memitem:addbd7690323762b93b4ab90e227cd271" id="r_addbd7690323762b93b4ab90e227cd271"><td class="memItemLeft" align="right" valign="top">pd.Series&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addbd7690323762b93b4ab90e227cd271">hampel</a> (pd.Series series, int window_size=7, float n_sigmas=3.0)</td></tr>
+<tr class="memdesc:addbd7690323762b93b4ab90e227cd271"><td class="mdescLeft">&#160;</td><td class="mdescRight">Identifica valores atípicos usando el filtro de Hampel.  <br /></td></tr>
 <tr class="separator:addbd7690323762b93b4ab90e227cd271"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c18f46383b942edbc842787d7922b10" id="r_a8c18f46383b942edbc842787d7922b10"><td class="memItemLeft" align="right" valign="top">np.ndarray&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c18f46383b942edbc842787d7922b10">step_response</a> (np.ndarray t, float K, float tau, float theta, float y0, float du)</td></tr>
-<tr class="separator:a8c18f46383b942edbc842787d7922b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d214b5e9d959312b78e0a9bbcc31995" id="r_a8d214b5e9d959312b78e0a9bbcc31995"><td class="memItemLeft" align="right" valign="top">tuple[float, float, float]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d214b5e9d959312b78e0a9bbcc31995">ajustar_fopdt</a> (pd.Series t, pd.Series y, float y0, float du)</td></tr>
-<tr class="separator:a8d214b5e9d959312b78e0a9bbcc31995"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a92c36646088f3809fb28e2a6cd039ac4" id="r_a92c36646088f3809fb28e2a6cd039ac4"><td class="memItemLeft" align="right" valign="top">list[tuple[int, int]]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92c36646088f3809fb28e2a6cd039ac4">detectar_escalones</a> (pd.DataFrame df, str pwm_col)</td></tr>
-<tr class="separator:a92c36646088f3809fb28e2a6cd039ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa244216165f324198b0bc32116e45186" id="r_aa244216165f324198b0bc32116e45186"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa244216165f324198b0bc32116e45186">step_response</a> (t, float K, float tau, float theta, float y0, float du)</td></tr>
+<tr class="memdesc:aa244216165f324198b0bc32116e45186"><td class="mdescLeft">&#160;</td><td class="mdescRight">Función de transferencia FOPDT en el dominio del tiempo.  <br /></td></tr>
+<tr class="separator:aa244216165f324198b0bc32116e45186"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86bbff870630804adbc1665a871cb52b" id="r_a86bbff870630804adbc1665a871cb52b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a86bbff870630804adbc1665a871cb52b">ajustar_fopdt</a> (pd.Series t, pd.Series y, float y0, float du)</td></tr>
+<tr class="memdesc:a86bbff870630804adbc1665a871cb52b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ajusta un modelo FOPDT a los datos de un tramo mediante <em>curve_fit</em>.  <br /></td></tr>
+<tr class="separator:a86bbff870630804adbc1665a871cb52b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c64bf3a221b6a137e7d859c5a21bdb9" id="r_a2c64bf3a221b6a137e7d859c5a21bdb9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c64bf3a221b6a137e7d859c5a21bdb9">detectar_escalones</a> (pd.DataFrame df, str pwm_col)</td></tr>
+<tr class="memdesc:a2c64bf3a221b6a137e7d859c5a21bdb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encuentra los índices (inicio, fin) de cada tramo de PWM constante.  <br /></td></tr>
+<tr class="separator:a2c64bf3a221b6a137e7d859c5a21bdb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f9337547e277ec9ddbef98ccbcb0c3b" id="r_a6f9337547e277ec9ddbef98ccbcb0c3b"><td class="memItemLeft" align="right" valign="top">None&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f9337547e277ec9ddbef98ccbcb0c3b">main</a> ()</td></tr>
+<tr class="memdesc:a6f9337547e277ec9ddbef98ccbcb0c3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Punto de entrada.  <br /></td></tr>
 <tr class="separator:a6f9337547e277ec9ddbef98ccbcb0c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Descripción detallada</h2>
 <div class="textblock"><pre class="fragment">/**
-* @file    model_fopdt_fit.py
-* @brief   Ajuste de un modelo FOPDT (K, τ, θ) a cada escalón de PWM → RPM
-* @details
-*   * Lee un archivo CSV con columnas de tiempo, PWM y RPM.  
-*   * Detecta los escalones de PWM y divide la señal en tramos “subida/bajada”.  
-*   * Filtra valores atípicos mediante la prueba de Hampel.  
-*   * Ajusta un modelo FOPDT por mínimos cuadrados no‑lineales a cada tramo.  
-*   * Genera y guarda una figura PNG por tramo con la curva medida y la curva
-*     modelo (`pwm_&lt;valorPWM&gt;_&lt;subida|bajada&gt;.png`).  
-* Ejecución:
-* \code{.bash}
-*   python model_fopdt_fit.py datos.csv
-* \endcode
-* Si no se pasa el CSV como argumento, el nombre se pedirá por *stdin*.
-*
-* @warning  Requiere los paquetes *NumPy*, *Pandas*, *SciPy* y *Matplotlib*.
-* @version  1.0
-* @date     2025‑05‑04
-* @author   Miguel Angel Alvarez Guzman
-**/
+ * @file    model_fopdt_fit.py
+ * @brief   Ajuste de un modelo FOPDT por escalones y generación de un gráfico
+ *          global comparativo (datos vs modelo) a partir de un registro CSV.
+ *
+ * El programa:
+ *   - Lee un archivo CSV con tiempo, PWM y RPM de un ensayo de barrido.
+ *   - Detecta los escalones de PWM (subidas y bajadas) en la señal medida.
+ *   - Elimina valores atípicos mediante la prueba de Hampel.
+ *   - Ajusta, por mínimos cuadrados no‑lineales, un modelo FOPDT a cada tramo.
+ *   - Genera gráficos PNG individuales por tramo con la curva medida y el modelo.
+ *   - Construye y guarda un gráfico global (todas las curvas) para validar el
+ *     modelo completo.
+ *
+ * @version 1.2
+ * @date    2025‑05‑06
+ * @author  Miguel Ángel Álvarez Guzmán
+ */
 </pre> </div><h2 class="groupheader">Documentación de funciones</h2>
-<a id="a8d214b5e9d959312b78e0a9bbcc31995" name="a8d214b5e9d959312b78e0a9bbcc31995"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d214b5e9d959312b78e0a9bbcc31995">&#9670;&#160;</a></span>ajustar_fopdt()</h2>
+<a id="a86bbff870630804adbc1665a871cb52b" name="a86bbff870630804adbc1665a871cb52b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86bbff870630804adbc1665a871cb52b">&#9670;&#160;</a></span>ajustar_fopdt()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"> tuple[float, float, float] Control_Analisis_Data.ajustar_fopdt </td>
+          <td class="memname">Control_Analisis_Data.ajustar_fopdt </td>
           <td>(</td>
           <td class="paramtype">pd.Series</td>          <td class="paramname"><span class="paramname"><em>t</em></span>, </td>
         </tr>
@@ -173,23 +175,29 @@ Funciones</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">@brief   Ajusta los parámetros FOPDT (K, τ, θ) por mínimos cuadrados.
-@param   t   Tiempo (s) relativo al inicio del tramo.
-@param   y   Datos de salida (RPM) sin *outliers*.
-@param   y0  Valor inicial de la salida.
-@param   du  Amplitud del escalón PWM.
-@return  Tupla (K, τ, θ) optimizada.
-</pre> 
+
+<p>Ajusta un modelo FOPDT a los datos de un tramo mediante <em>curve_fit</em>. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>Tiempo relativo (s) del tramo. </td></tr>
+    <tr><td class="paramname">y</td><td>Señal de salida (RPM) medida. </td></tr>
+    <tr><td class="paramname">y0</td><td>Nivel inicial de y. </td></tr>
+    <tr><td class="paramname">du</td><td>Cambio de entrada PWM. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Tupla (K, tau, theta) del modelo ajustado. </dd></dl>
+
 </div>
 </div>
-<a id="a92c36646088f3809fb28e2a6cd039ac4" name="a92c36646088f3809fb28e2a6cd039ac4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92c36646088f3809fb28e2a6cd039ac4">&#9670;&#160;</a></span>detectar_escalones()</h2>
+<a id="a2c64bf3a221b6a137e7d859c5a21bdb9" name="a2c64bf3a221b6a137e7d859c5a21bdb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c64bf3a221b6a137e7d859c5a21bdb9">&#9670;&#160;</a></span>detectar_escalones()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"> list[tuple[int, int]] Control_Analisis_Data.detectar_escalones </td>
+          <td class="memname">Control_Analisis_Data.detectar_escalones </td>
           <td>(</td>
           <td class="paramtype">pd.DataFrame</td>          <td class="paramname"><span class="paramname"><em>df</em></span>, </td>
         </tr>
@@ -200,12 +208,17 @@ Funciones</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">@brief   Localiza los índices de inicio/fin de cada tramo posterior
-         a un cambio de PWM.
-@param   df       *DataFrame* con los datos.
-@param   pwm_col  Nombre de la columna PWM.
-@return  Lista de tuplas (idx_start, idx_end) por tramo.
-</pre> 
+
+<p>Encuentra los índices (inicio, fin) de cada tramo de PWM constante. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">df</td><td>DataFrame con los datos originales. </td></tr>
+    <tr><td class="paramname">pwm_col</td><td>Nombre de la columna PWM. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Lista de tuplas (idx_ini, idx_fin) por tramo. </dd></dl>
+
 </div>
 </div>
 <a id="addbd7690323762b93b4ab90e227cd271" name="addbd7690323762b93b4ab90e227cd271"></a>
@@ -231,15 +244,18 @@ Funciones</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">@brief   Detecta *outliers* con la prueba de Hampel.
-@details Calcula la Mediana de la Desviación Absoluta (MAD) en una ventana
-         móvil y marca como atípicos los puntos cuyo desvío supera
-         `n_sigmas·MAD`.
-@param   series       Serie de datos a inspeccionar.
-@param   window_size  Tamaño de la ventana móvil (en muestras).
-@param   n_sigmas     Umbral en desviaciones MAD para etiquetar *outliers*.
-@return  Serie booleana (`True` donde el punto es *outlier*).
-</pre> 
+
+<p>Identifica valores atípicos usando el filtro de Hampel. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">series</td><td>Señal de entrada (Series de Pandas). </td></tr>
+    <tr><td class="paramname">window_size</td><td>Tamaño de la ventana deslizante (número de muestras). </td></tr>
+    <tr><td class="paramname">n_sigmas</td><td>Multiplicador del MAD (desviación absoluta mediana) para definir el umbral. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Serie booleana donde <em>True</em> indica un outlier. </dd></dl>
+
 </div>
 </div>
 <a id="a6f9337547e277ec9ddbef98ccbcb0c3b" name="a6f9337547e277ec9ddbef98ccbcb0c3b"></a>
@@ -256,25 +272,22 @@ Funciones</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">@brief   Punto de entrada del script.
-@details
-  1. Carga el CSV.  
-  2. Detecta las columnas relevantes (Tiempo, PWM, RPM).  
-  3. Segmenta en escalones.  
-  4. Aplica filtro, ajusta modelo y genera una figura por tramo.
-</pre> 
+
+<p>Punto de entrada. </p>
+<p>Procesa el CSV, ajusta tramo a tramo y genera gráficos. </p>
+
 </div>
 </div>
-<a id="a8c18f46383b942edbc842787d7922b10" name="a8c18f46383b942edbc842787d7922b10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c18f46383b942edbc842787d7922b10">&#9670;&#160;</a></span>step_response()</h2>
+<a id="aa244216165f324198b0bc32116e45186" name="aa244216165f324198b0bc32116e45186"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa244216165f324198b0bc32116e45186">&#9670;&#160;</a></span>step_response()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"> np.ndarray Control_Analisis_Data.step_response </td>
+          <td class="memname">Control_Analisis_Data.step_response </td>
           <td>(</td>
-          <td class="paramtype">np.ndarray</td>          <td class="paramname"><span class="paramname"><em>t</em></span>, </td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>t</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -303,15 +316,21 @@ Funciones</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">@brief   Respuesta de 1er orden con retardo a un escalón.
-@param   t      Vector de tiempo (s).
-@param   K      Ganancia estacionaria del proceso.
-@param   tau    Constante de tiempo (s).
-@param   theta  Retardo puro (s).
-@param   y0     Valor inicial de la salida.
-@param   du     Amplitud del escalón de entrada.
-@return  Vector con la respuesta simulada.
-</pre> 
+
+<p>Función de transferencia FOPDT en el dominio del tiempo. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>Vector de tiempos (s). </td></tr>
+    <tr><td class="paramname">K</td><td>Ganancia estacionaria. </td></tr>
+    <tr><td class="paramname">tau</td><td>Constante de tiempo (s). </td></tr>
+    <tr><td class="paramname">theta</td><td>Retardo puro (s). </td></tr>
+    <tr><td class="paramname">y0</td><td>Nivel inicial (RPM) al iniciar el escalón. </td></tr>
+    <tr><td class="paramname">du</td><td>Cambio en la entrada PWM (Δu). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Respuesta y(t) del sistema. </dd></dl>
+
 </div>
 </div>
 </div><!-- contents -->

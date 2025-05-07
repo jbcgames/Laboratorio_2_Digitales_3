@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ejecutar_5fcaptura_0',['ejecutar_captura',['../namespace_rp2040___mpy__code.html#ac0a9d8d2bc8620cd9b957b346e68edd0',1,'Rp2040_Mpy_code']]]
+  ['detectar_5fescalones_0',['detectar_escalones',['../namespace_control___analisis___data.html#a2c64bf3a221b6a137e7d859c5a21bdb9',1,'Control_Analisis_Data']]]
 ];

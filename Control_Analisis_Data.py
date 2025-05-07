@@ -2,32 +2,82 @@
 """
 /**
  * @file    model_fopdt_fit.py
- * @brief   Ajuste FOPDT por escalones y gráfico global del sistema
- * @version 1.2  (2025‑05‑06)
-**/
+ * @brief   Ajuste de un modelo FOPDT por escalones y generación de un gráfico
+ *          global comparativo (datos vs modelo) a partir de un registro CSV.
+ *
+ * El programa:
+ *   - Lee un archivo CSV con tiempo, PWM y RPM de un ensayo de barrido.
+ *   - Detecta los escalones de PWM (subidas y bajadas) en la señal medida.
+ *   - Elimina valores atípicos mediante la prueba de Hampel.
+ *   - Ajusta, por mínimos cuadrados no‑lineales, un modelo FOPDT a cada tramo.
+ *   - Genera gráficos PNG individuales por tramo con la curva medida y el modelo.
+ *   - Construye y guarda un gráfico global (todas las curvas) para validar el
+ *     modelo completo.
+ *
+ * @version 1.2
+ * @date    2025‑05‑06
+ * @author  Miguel Ángel Álvarez Guzmán
+ */
 """
+
 import sys, os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
-# ----------------------------------------------------------------------
-def hampel(series, window_size=7, n_sigmas=3.0):
-    k = 1.4826
+# -----------------------------------------------------------------------------
+# Funciones utilitarias                                                         
+# -----------------------------------------------------------------------------
+
+def hampel(series: pd.Series, window_size: int = 7, n_sigmas: float = 3.0) -> pd.Series:
+    """!
+    Identifica valores atípicos usando el filtro de Hampel.
+
+    @param series        Señal de entrada (Series de Pandas).
+    @param window_size   Tamaño de la ventana deslizante (número de muestras).
+    @param n_sigmas      Multiplicador del MAD (desviación absoluta mediana)
+                         para definir el umbral.
+    @return Serie booleana donde *True* indica un outlier.
+    """
+    k = 1.4826  # factor para aproximar la desviación estándar
     med_rolling = series.rolling(window_size, center=True).median()
     diff = np.abs(series - med_rolling)
     mad = k * diff.rolling(window_size, center=True).median()
     return (diff > n_sigmas * mad).fillna(False)
 
-# ---------- Modelo ----------------------------------------------------
-def step_response(t, K, tau, theta, y0, du):
+# -----------------------------------------------------------------------------
+# Modelo FOPDT                                                                  
+# -----------------------------------------------------------------------------
+
+def step_response(t, K: float, tau: float, theta: float, y0: float, du: float):
+    """!
+    Función de transferencia FOPDT en el dominio del tiempo.
+
+    @param t      Vector de tiempos (s).
+    @param K      Ganancia estacionaria.
+    @param tau    Constante de tiempo (s).
+    @param theta  Retardo puro (s).
+    @param y0     Nivel inicial (RPM) al iniciar el escalón.
+    @param du     Cambio en la entrada PWM (Δu).
+    @return       Respuesta y(t) del sistema.
+    """
     t = np.asarray(t)
     return np.where(t < theta,
                     y0,
                     y0 + K * du * (1 - np.exp(-(t - theta) / tau)))
 
-def ajustar_fopdt(t, y, y0, du):
+
+def ajustar_fopdt(t: pd.Series, y: pd.Series, y0: float, du: float):
+    """!
+    Ajusta un modelo FOPDT a los datos de un tramo mediante *curve_fit*.
+
+    @param t   Tiempo relativo (s) del tramo.
+    @param y   Señal de salida (RPM) medida.
+    @param y0  Nivel inicial de y.
+    @param du  Cambio de entrada PWM.
+    @return    Tupla (K, tau, theta) del modelo ajustado.
+    """
     K0 = (y.iloc[-1] - y0) / du if du else 1.0
     tau0 = max((t.iloc[-1] - t.iloc[0]) / 3.0, 0.05)
     popt, _ = curve_fit(lambda t_, K, tau, theta: step_response(t_, K, tau, theta, y0, du),
@@ -36,19 +86,35 @@ def ajustar_fopdt(t, y, y0, du):
                         method='trf', loss='soft_l1')
     return popt  # (K, tau, theta)
 
-# ---------- Escalones -------------------------------------------------
-def detectar_escalones(df, pwm_col):
+# -----------------------------------------------------------------------------
+# Detección de escalones                                                        
+# -----------------------------------------------------------------------------
+
+def detectar_escalones(df: pd.DataFrame, pwm_col: str):
+    """!
+    Encuentra los índices (inicio, fin) de cada tramo de PWM constante.
+
+    @param df        DataFrame con los datos originales.
+    @param pwm_col   Nombre de la columna PWM.
+    @return          Lista de tuplas (idx_ini, idx_fin) por tramo.
+    """
     cambio = df[pwm_col].diff().fillna(0) != 0
     pasos = np.where(cambio)[0]
     pasos = np.append(pasos, len(df))
     return [(pasos[i], pasos[i+1]) for i in range(len(pasos)-1)]
 
-# ======================================================================
-def main():
+# -----------------------------------------------------------------------------
+# Programa principal                                                            
+# -----------------------------------------------------------------------------
+
+def main() -> None:
+    """!
+    Punto de entrada. Procesa el CSV, ajusta tramo a tramo y genera gráficos.
+    """
     csv_file = sys.argv[1] if len(sys.argv) > 1 else input("Nombre del CSV: ")
     df = pd.read_csv(csv_file)
 
-    # -- columnas -----------------------------------------------------------------
+    # --------------------------- Selección de columnas -----------------------
     time_col = ('Tiempo_ms' if 'Tiempo_ms' in df.columns else
                 'timestamp_us' if 'timestamp_us' in df.columns else df.columns[0])
     if time_col == 'timestamp_us':
@@ -58,30 +124,30 @@ def main():
     pwm_col = 'PWM_porcentaje' if 'PWM_porcentaje' in df.columns else df.columns[1]
     rpm_col = 'RPM' if 'RPM' in df.columns else df.columns[2]
 
-    # normaliza tiempo absoluto a segundos desde inicio
+    # Normaliza tiempo absoluto a segundos desde inicio
     df['t_s'] = (df[time_col] - df[time_col].iloc[0]) / 1000.0
 
     tramos = detectar_escalones(df, pwm_col)
-    resultados = []          # para construir la curva global
+    resultados = []  # Acumula parámetros para la curva global
 
-    # ------------------------------------------------------------------por tramo
+    # --------------------------- Procesamiento por tramo --------------------
     for idx_start, idx_end in tramos:
         seg = df.iloc[idx_start:idx_end].copy()
-        if len(seg) < 8:  # tramo muy corto
-            continue
+        if len(seg) < 8:
+            continue  # tramo demasiado corto
 
         pwm_new  = seg[pwm_col].iloc[0]
         pwm_prev = df[pwm_col].iloc[idx_start-1] if idx_start > 0 else pwm_new
         du = pwm_new - pwm_prev
         if du == 0:
-            continue
+            continue  # sin cambio
 
         direccion = 'subida' if du > 0 else 'bajada'
         t_rel = seg['t_s'] - seg['t_s'].iloc[0]
         y     = seg[rpm_col]
         y0    = y.iloc[0]
 
-        # ---- filtro Hampel -------------------------------------------------------
+        # ---- filtro Hampel ---------------------------------------------------
         mask = ~hampel(y, 7, 3.0)
         t_clean, y_clean = t_rel[mask], y[mask]
         if len(y_clean) < 5:
@@ -97,7 +163,7 @@ def main():
         t_seg = t_rel
         y_mod = step_response(t_seg, K, tau, theta, y0, du)
 
-        # ---- gráfico individual --------------------------------------------------
+        # ---- gráfico individual ---------------------------------------------
         rmse = np.sqrt(np.mean((y_clean - step_response(t_clean, K, tau, theta, y0, du))**2))
         plt.figure(figsize=(8,4))
         plt.plot(t_clean, y_clean, '.', label='Medido')
@@ -107,11 +173,12 @@ def main():
         plt.title(f'PWM {pwm_prev:.0f}→{pwm_new:.0f}% ({direccion})')
         plt.xlabel('Tiempo [s]'); plt.ylabel('RPM')
         plt.grid(); plt.legend(); plt.tight_layout()
-        fname = f"Salida Mpy/pwm_{int(pwm_new)}_{direccion}_mpy.png"
+        fname = os.path.join('Salida Mpy', f"pwm_{int(pwm_new)}_{direccion}_mpy.png")
+        os.makedirs('Salida Mpy', exist_ok=True)
         plt.savefig(fname, dpi=150); plt.close()
         print(f"[OK] Guardado: {fname}")
 
-        # ---- guardar parámetros para curva global -------------------------------
+        # ---- guardar parámetros para curva global ---------------------------
         resultados.append({
             'slice': slice(idx_start, idx_end),
             'K': K, 'tau': tau, 'theta': theta,
@@ -119,7 +186,7 @@ def main():
             't0': df['t_s'].iloc[idx_start]
         })
 
-    # ================================================================= global ===
+    # --------------------------- Gráfico global ------------------------------
     if resultados:
         y_model_global = np.full(len(df), np.nan)
         for r in resultados:

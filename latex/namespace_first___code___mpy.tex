@@ -1,0 +1,126 @@
+\doxysection{Referencia del espacio de nombres First\+\_\+\+Code\+\_\+\+Mpy}
+\hypertarget{namespace_first___code___mpy}{}\label{namespace_first___code___mpy}\index{First\_Code\_Mpy@{First\_Code\_Mpy}}
+\doxysubsubsection*{Funciones}
+\begin{DoxyCompactItemize}
+\item 
+None \mbox{\hyperlink{namespace_first___code___mpy_ad1d45ce29a6d242a2f82b86de04f4364}{incrementar\+\_\+contador}} (Pin pin)
+\begin{DoxyCompactList}\small\item\em Incrementa el contador global de flancos. \end{DoxyCompactList}\item 
+float \mbox{\hyperlink{namespace_first___code___mpy_ae11f3e1f96e598fddf3e5e8efafbb7be}{calcular\+\_\+rpm}} ()
+\begin{DoxyCompactList}\small\item\em Calcula las revoluciones por minuto (RPM) en función de los pulsos acumulados desde la última llamada. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespace_first___code___mpy_a7c82e9327094f54c1c25ae15684dabf3}\label{namespace_first___code___mpy_a7c82e9327094f54c1c25ae15684dabf3} 
+int {\bfseries ENCODER\+\_\+\+HUECOS} = 20
+\item 
+\Hypertarget{namespace_first___code___mpy_a206213794ce191b0351eb48a66a1e346}\label{namespace_first___code___mpy_a206213794ce191b0351eb48a66a1e346} 
+int {\bfseries TIEMPO\+\_\+\+ENTRE\+\_\+\+PASOS} = 2000
+\item 
+\Hypertarget{namespace_first___code___mpy_ace2cf9e8e19f020ee828489b0e2a23fc}\label{namespace_first___code___mpy_ace2cf9e8e19f020ee828489b0e2a23fc} 
+int {\bfseries MEDICION\+\_\+\+INTERVALO\+\_\+\+MS} = 4
+\item 
+\Hypertarget{namespace_first___code___mpy_ad5e06ff935cff9a7f39b11762ab0da4a}\label{namespace_first___code___mpy_ad5e06ff935cff9a7f39b11762ab0da4a} 
+list {\bfseries PASOS\+\_\+\+PWM} = \mbox{[}0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100\mbox{]}
+\item 
+\Hypertarget{namespace_first___code___mpy_a70a2af729eba77b567b7363b6f4bd5e2}\label{namespace_first___code___mpy_a70a2af729eba77b567b7363b6f4bd5e2} 
+str {\bfseries ARCHIVO} = "{}datos.\+csv"{}
+\item 
+\Hypertarget{namespace_first___code___mpy_aa8ac9fe4a7c8ffa08c7bdf8f86645dc7}\label{namespace_first___code___mpy_aa8ac9fe4a7c8ffa08c7bdf8f86645dc7} 
+int {\bfseries contador} = 0
+\item 
+\Hypertarget{namespace_first___code___mpy_a27ae20b177e3efa5f0330b1960cd3881}\label{namespace_first___code___mpy_a27ae20b177e3efa5f0330b1960cd3881} 
+{\bfseries pwm\+\_\+pin} = PWM(Pin(3))
+\item 
+\Hypertarget{namespace_first___code___mpy_ab9ce32d19f0ac52b7461cbf32c109305}\label{namespace_first___code___mpy_ab9ce32d19f0ac52b7461cbf32c109305} 
+{\bfseries sensor\+\_\+pin} = Pin(5, Pin.\+IN, Pin.\+PULL\+\_\+\+UP)
+\item 
+\Hypertarget{namespace_first___code___mpy_a85920228b8da10ea6a768882d713df30}\label{namespace_first___code___mpy_a85920228b8da10ea6a768882d713df30} 
+{\bfseries trigger}
+\item 
+\Hypertarget{namespace_first___code___mpy_acf6f1ded021ccf42c1f9c3f0a39766ca}\label{namespace_first___code___mpy_acf6f1ded021ccf42c1f9c3f0a39766ca} 
+{\bfseries IRQ\+\_\+\+FALLING}
+\item 
+\Hypertarget{namespace_first___code___mpy_a7264e934732c7cbe72bbd8bcbb820d10}\label{namespace_first___code___mpy_a7264e934732c7cbe72bbd8bcbb820d10} 
+{\bfseries handler}
+\item 
+\Hypertarget{namespace_first___code___mpy_a0b2791dcbe69e9fd37998dda3ecc8ec8}\label{namespace_first___code___mpy_a0b2791dcbe69e9fd37998dda3ecc8ec8} 
+list {\bfseries secuencia\+\_\+pwm} = PASOS\+\_\+\+PWM + PASOS\+\_\+\+PWM\mbox{[}\+::-\/1\mbox{]}\mbox{[}1\+:\mbox{]}
+\item 
+\Hypertarget{namespace_first___code___mpy_aa63971cb14f393fc1c01e4eb88afe422}\label{namespace_first___code___mpy_aa63971cb14f393fc1c01e4eb88afe422} 
+{\bfseries tiempo\+\_\+inicio} = time.\+ticks\+\_\+ms()
+\item 
+\Hypertarget{namespace_first___code___mpy_afefe49d2cd7354d171f687914909f813}\label{namespace_first___code___mpy_afefe49d2cd7354d171f687914909f813} 
+{\bfseries duty} = int(65535 \texorpdfstring{$\ast$}{*} porcentaje / 100)
+\item 
+\Hypertarget{namespace_first___code___mpy_aa52591f9696c9a8a8d3cc67ac4ba679a}\label{namespace_first___code___mpy_aa52591f9696c9a8a8d3cc67ac4ba679a} 
+list {\bfseries datos\+\_\+temporales} = \mbox{[}$\,$\mbox{]}
+\item 
+\Hypertarget{namespace_first___code___mpy_a7303d7e68f87e9bbb84a99939a04164d}\label{namespace_first___code___mpy_a7303d7e68f87e9bbb84a99939a04164d} 
+{\bfseries tiempo\+\_\+inicio\+\_\+paso} = time.\+ticks\+\_\+ms()
+\item 
+\Hypertarget{namespace_first___code___mpy_a39c8f8e4e5dc439600c838b1164f1137}\label{namespace_first___code___mpy_a39c8f8e4e5dc439600c838b1164f1137} 
+{\bfseries ultimo\+\_\+tiempo\+\_\+medicion} = time.\+ticks\+\_\+ms()
+\item 
+\Hypertarget{namespace_first___code___mpy_a64317fb1bdd765a08d10561923f901a5}\label{namespace_first___code___mpy_a64317fb1bdd765a08d10561923f901a5} 
+{\bfseries tiempo\+\_\+actual} = time.\+ticks\+\_\+ms()
+\item 
+\Hypertarget{namespace_first___code___mpy_a9de39d5e0bbfe37efb3b0ae5b1edfb8c}\label{namespace_first___code___mpy_a9de39d5e0bbfe37efb3b0ae5b1edfb8c} 
+float {\bfseries rpm} = \mbox{\hyperlink{namespace_first___code___mpy_ae11f3e1f96e598fddf3e5e8efafbb7be}{calcular\+\_\+rpm}}()
+\item 
+\Hypertarget{namespace_first___code___mpy_ab4112b840b4993f7c25136cbd6d9eab5}\label{namespace_first___code___mpy_ab4112b840b4993f7c25136cbd6d9eab5} 
+{\bfseries marca\+\_\+tiempo} = time.\+ticks\+\_\+diff(tiempo\+\_\+actual, tiempo\+\_\+inicio)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Descripción detallada}
+\begin{DoxyVerb}/**
+ * @file    encoder_rpm_logger.py
+ * @brief   Medición de RPM con RP2040 usando un disco encoder y generación de
+ *          señal PWM para caracterización de motor.
+ *
+ * El script:
+ *   - Configura un pin PWM para excitar el motor a 100 kHz.
+ *   - Usa interrupciones para medir el número de ranuras del encoder que
+ *     pasan por el sensor y convertir dicho conteo en RPM cada 4 ms.
+ *   - Recorre automáticamente un barrido de ciclos de trabajo de 0 → 100 % y
+ *     vuelve a 0 % para capturar la curva de respuesta del motor.
+ *   - Almacena las tripletas {tiempo [ms], PWM [%], RPM} en un archivo CSV.
+ *
+ * @author  Miguel Ángel Álvarez Guzmán
+ * @date    2025‑05‑06
+ */
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Documentación de funciones}
+\Hypertarget{namespace_first___code___mpy_ae11f3e1f96e598fddf3e5e8efafbb7be}\index{First\_Code\_Mpy@{First\_Code\_Mpy}!calcular\_rpm@{calcular\_rpm}}
+\index{calcular\_rpm@{calcular\_rpm}!First\_Code\_Mpy@{First\_Code\_Mpy}}
+\doxysubsubsection{\texorpdfstring{calcular\_rpm()}{calcular\_rpm()}}
+{\footnotesize\ttfamily \label{namespace_first___code___mpy_ae11f3e1f96e598fddf3e5e8efafbb7be} 
+ float First\+\_\+\+Code\+\_\+\+Mpy.\+calcular\+\_\+rpm (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Calcula las revoluciones por minuto (RPM) en función de los pulsos acumulados desde la última llamada. 
+
+\begin{DoxyReturn}{Devuelve}
+Velocidad instantánea del eje en RPM. 
+\end{DoxyReturn}
+\Hypertarget{namespace_first___code___mpy_ad1d45ce29a6d242a2f82b86de04f4364}\index{First\_Code\_Mpy@{First\_Code\_Mpy}!incrementar\_contador@{incrementar\_contador}}
+\index{incrementar\_contador@{incrementar\_contador}!First\_Code\_Mpy@{First\_Code\_Mpy}}
+\doxysubsubsection{\texorpdfstring{incrementar\_contador()}{incrementar\_contador()}}
+{\footnotesize\ttfamily \label{namespace_first___code___mpy_ad1d45ce29a6d242a2f82b86de04f4364} 
+ None First\+\_\+\+Code\+\_\+\+Mpy.\+incrementar\+\_\+contador (\begin{DoxyParamCaption}\item[{Pin}]{pin}{}\end{DoxyParamCaption})}
+
+
+
+Incrementa el contador global de flancos. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em pin} & Objeto \+:class\+:{\ttfamily machine.\+Pin} que disparó la interrupción. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Nota}
+Esta función se registra como manejador de interrupción (IRQ) en el flanco de bajada generado cada vez que pasa una ranura del encoder. 
+\end{DoxyNote}
