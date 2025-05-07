@@ -53,7 +53,7 @@ def hampel(series: pd.Series, window_size: int = 7, n_sigmas: float = 3.0) -> pd
 def step_response(t, K: float, tau: float, theta: float, y0: float, du: float):
     """!
     Función de transferencia FOPDT en el dominio del tiempo.
-
+ 
     @param t      Vector de tiempos (s).
     @param K      Ganancia estacionaria.
     @param tau    Constante de tiempo (s).
